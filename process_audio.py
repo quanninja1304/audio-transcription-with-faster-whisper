@@ -22,10 +22,10 @@ if torch.cuda.is_available():
     torch.cuda.manual_seed_all(SEED_VALUE)
 
 # -----------------------------------------------
-# KHỞI TẠO GEMINI (CHẠY 1 LẦN)
+# KHỞI TẠO GEMINI
 # -----------------------------------------------
 
-# PROMPT ĐÃ RÚT GỌN (Lựa chọn 1)
+# PROMPT
 SYSTEM_PROMPT = """
 Bạn là một trợ lý AI chuyên nghiệp, nhiệm vụ của bạn là trích xuất thông tin đơn hàng
 từ một đoạn văn bản phiên âm (transcript).
@@ -58,12 +58,12 @@ output_schema = {
     }
 }
 
-# Biến toàn cục cho model, sẽ được khởi tạo trong hàm main()
+# Biến toàn cục cho model
 gemini_model_global = None
 gemini_config_global = None
 
 # -----------------------------------------------
-# CÁC HÀM UTILS
+# UTILS
 # -----------------------------------------------
 
 def initialize_gemini():
@@ -72,7 +72,7 @@ def initialize_gemini():
     """
     global gemini_model_global, gemini_config_global
     try:
-        # THAY ĐỔI QUAN TRỌNG: Đọc từ Biến môi trường
+        # Đọc từ Biến môi trường
         api_key = os.environ.get('GOOGLE_API_KEY')
         if not api_key:
             print("LỖI: Biến môi trường 'GOOGLE_API_KEY' không được tìm thấy.")
@@ -89,7 +89,7 @@ def initialize_gemini():
             response_mime_type="application/json",
             response_schema=output_schema
         )
-        print("✅ Gemini model và config đã được khởi tạo.")
+        print("Gemini model và config đã được khởi tạo.")
         return True
         
     except Exception as e:
@@ -123,11 +123,11 @@ def extract_products_with_gemini(transcript_text, max_retries=3):
 
         except Exception as e:
             if "429" in str(e) and attempt < max_retries - 1:
-                print(f"⚠️ WARNING: Rate Limit (429). Chờ {wait_time}s... (Lần {attempt + 1})")
+                print(f"WARNING: Rate Limit (429). Chờ {wait_time}s... (Lần {attempt + 1})")
                 time.sleep(wait_time)
                 wait_time *= 2
             else:
-                print(f"❌ ERROR while calling Gemini API (không thể phục hồi): {e}")
+                print(f"ERROR while calling Gemini API (không thể phục hồi): {e}")
                 if "response" in locals():
                     print(f"Returned content: {response.text}")
                 return None
@@ -146,9 +146,9 @@ def save_to_excel(data, excel_path):
         df = pd.DataFrame(data)
         df = df[["ten_san_pham", "so_luong", "don_vi"]] # Đảm bảo đúng thứ tự cột
         df.to_excel(excel_path, index=False)
-        print(f"✅ Excel file saved successfully!\nFilepath: {excel_path}")
+        print(f"Excel file saved successfully!\nFilepath: {excel_path}")
     except Exception as e:
-        print(f"❌ ERROR while saving Excel file: {e}")
+        print(f"ERROR while saving Excel file: {e}")
 
 
 def load_whisper_model(model_size):
@@ -161,10 +161,10 @@ def load_whisper_model(model_size):
     print(f"Đang tải Whisper model '{model_size}' (device: {device}, compute: {compute_type})...")
     try:
         model = WhisperModel(model_size, device=device, compute_type=compute_type)
-        print("✅ Whisper model loaded.")
+        print("Whisper model loaded.")
         return model
     except Exception as e:
-        print(f"❌ LỖI khi tải model Whisper: {e}")
+        print(f"LỖI khi tải model Whisper: {e}")
         return None
 
 def get_audio_duration(audio_path):
@@ -183,14 +183,14 @@ def get_audio_duration(audio_path):
         probe_data = json.loads(result.stdout)
         return float(probe_data['format']['duration'])
     except FileNotFoundError:
-        print("❌ LỖI: Lệnh 'ffprobe' không tìm thấy. Hãy đảm bảo FFmpeg đã được cài đặt.")
+        print("LỖI: Lệnh 'ffprobe' không tìm thấy. Hãy đảm bảo FFmpeg đã được cài đặt.")
         return None
     except Exception as e:
-        print(f"⚠️ WARNING: Không thể lấy thời lượng audio: {e}")
+        print(f"WARNING: Không thể lấy thời lượng audio: {e}")
         return None
 
 # -----------------------------------------------
-# HÀM XỬ LÝ CHÍNH
+# MAIN PROCESS
 # -----------------------------------------------
 
 def process_single_file(whisper_model, audio_path, excel_output_path):
@@ -228,9 +228,9 @@ def process_single_file(whisper_model, audio_path, excel_output_path):
         )
         segments_list = list(segments)
         phase1_end = time.time()
-        print(f"⏱️ phase 1 (Whisper): {(phase1_end - phase1_start):.3f} sec")
+        print(f"phase 1 (Whisper): {(phase1_end - phase1_start):.3f} sec")
     except Exception as e:
-        print(f"❌ LỖI trong Phase 1 (Whisper): {e}")
+        print(f"LỖI trong Phase 1 (Whisper): {e}")
         return
 
     # ----- BỎ HOÀN TOÀN PHASE 1B (GHI JSON) -----
@@ -246,36 +246,32 @@ def process_single_file(whisper_model, audio_path, excel_output_path):
         if extracted_data:
             save_to_excel(extracted_data, excel_output_path)
         else:
-            print("⚠️ Gemini API call failed or returned no data.")
+            print("Gemini API call failed or returned no data.")
     else:
-        print("⚠️ Whisper returned an empty transcript.")
+        print("Whisper returned an empty transcript.")
 
     phase2_end = time.time()
-    print(f"⏱️ phase 2 (Gemini + Excel): {(phase2_end - phase2_start):.3f} sec")
+    print(f"phase 2 (Gemini + Excel): {(phase2_end - phase2_start):.3f} sec")
 
     total_end_time = time.time()
-    print(f"🎉 ** Total processed time: {(total_end_time - total_start_time):.3f} sec **")
-    print("-" * 50)
+    print(f"** Total processed time: {(total_end_time - total_start_time):.3f} sec **")
 
 
 # -----------------------------------------------
-# ĐIỂM BẮT ĐẦU CHẠY SCRIPT
+# CHECKPOINT
 # -----------------------------------------------
 
 if __name__ == "__main__":
-    # --- CẤU HÌNH ---
-    # Thay đổi đường dẫn này cho phù hợp với máy của bạn
-    # Dùng / thay vì \ kể cả trên Windows cho dễ
+    # --- CONFIG ---
     AUDIO_FILE = "sample_audio/2.wav" 
     EXCEL_OUTPUT = "transcripts/2_gemini_order.xlsx"
-    # --- KẾT THÚC CẤU HÌNH ---
 
-    # 1. Khởi tạo các model (chỉ 1 lần)
+    # 1. Khởi tạo model
     whisper_model = load_whisper_model(model_size="medium")
     gemini_ready = initialize_gemini()
 
-    # 2. Chạy xử lý nếu mọi thứ sẵn sàng
+    # 2. main process
     if whisper_model and gemini_ready:
         process_single_file(whisper_model, AUDIO_FILE, EXCEL_OUTPUT)
     else:
-        print("❌ LỖI: Không thể khởi tạo model, script bị dừng.")
+        print("LỖI: Không thể khởi tạo model, script bị dừng.")
