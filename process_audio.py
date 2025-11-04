@@ -274,4 +274,4 @@ if __name__ == "__main__":
     if whisper_model and gemini_ready:
         process_single_file(whisper_model, AUDIO_FILE, EXCEL_OUTPUT)
     else:
-        print("LỖI: Không thể khởi tạo model, script bị dừng.")
+        print("LỖI: Không thể khởi tạo model, script bị dừng.") 
