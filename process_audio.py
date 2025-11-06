@@ -263,7 +263,7 @@ def process_single_file(whisper_model, audio_path, excel_output_path):
 # -----------------------------------------------
 
 if __name__ == "__main__":
-    # --- PATYH ---
+    # --- PATH ---
     AUDIO_FILE = "sample_audio/2.wav" 
     EXCEL_OUTPUT = "transcripts/2_wav_gemini_order.xlsx"
 
