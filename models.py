@@ -30,7 +30,7 @@ def initialize_gemini():
             response_mime_type="application/json",
             response_schema=config.OUTPUT_SCHEMA
         )
-        print("Gemini model và config đã được khởi tạo.")
+        print("Gemini model và config valid")
         return gemini_model, gemini_config
         
     except Exception as e:
@@ -39,12 +39,12 @@ def initialize_gemini():
 
 def load_whisper_model(model_size):
     """
-    Tải model Whisper (đã tối ưu).
+    Tải model Whisper.
     """
     device = "cuda" if torch.cuda.is_available() else "cpu"
     compute_type = "float16" if device == "cuda" else "default"
     
-    print(f"Đang tải Whisper model '{model_size}' (device: {device}, compute: {compute_type})...")
+    print(f"model: '{model_size}' (device: {device}, compute: {compute_type})...")
     try:
         model = WhisperModel(model_size, device=device, compute_type=compute_type)
         print("Whisper model loaded.")

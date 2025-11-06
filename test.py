@@ -11,7 +11,7 @@ from google.generativeai.types import GenerationConfig
 from faster_whisper import WhisperModel
 
 # -----------------------------------------------
-# CÀI ĐẶT SEED VÀ CÁC BIẾN TOÀN CỤC
+# SET SEED VÀ CÁC BIẾN TOÀN CỤC
 # -----------------------------------------------
 
 SEED_VALUE = 42

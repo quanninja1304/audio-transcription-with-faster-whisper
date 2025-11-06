@@ -61,11 +61,9 @@ def process_single_file(whisper_model, gemini_model, gemini_config, audio_path, 
 
     total_end_time = time.time()
     print(f"** Total processed time: {(total_end_time - total_start_time):.3f} sec **")
-    print("-" * 50)
 
 
 if __name__ == "__main__":
-    
     # 1. Cài đặt seed
     utils.set_seed(config.SEED_VALUE)
 
@@ -73,7 +71,6 @@ if __name__ == "__main__":
     print("--- Khởi tạo Model ---")
     whisper_model = models.load_whisper_model(model_size=config.WHISPER_MODEL_SIZE)
     gemini_model, gemini_config = models.initialize_gemini()
-    print("------------------------")
 
     # 3. main process
     if whisper_model and gemini_model and gemini_config:

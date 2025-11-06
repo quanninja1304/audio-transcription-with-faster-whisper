@@ -29,11 +29,11 @@ def extract_products_with_gemini(transcript_text, model, config, max_retries=3):
 
         except Exception as e:
             if "429" in str(e) and attempt < max_retries - 1:
-                print(f"⚠️ WARNING: Rate Limit (429). Chờ {wait_time}s... (Lần {attempt + 1})")
+                print(f"WARNING: Rate Limit (429). Chờ {wait_time}s... (Lần {attempt + 1})")
                 time.sleep(wait_time)
                 wait_time *= 2
             else:
-                print(f"❌ ERROR while calling Gemini API (không thể phục hồi): {e}")
+                print(f"ERROR while calling Gemini API (không thể phục hồi): {e}")
                 if "response" in locals():
                     print(f"Returned content: {response.text}")
                 return None
