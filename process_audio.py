@@ -276,3 +276,5 @@ if __name__ == "__main__":
         process_single_file(whisper_model, AUDIO_FILE, EXCEL_OUTPUT)
     else:
         print("❌ LỖI: Không thể khởi tạo model, script bị dừng.")
+
+        # quan dzai t1win 
