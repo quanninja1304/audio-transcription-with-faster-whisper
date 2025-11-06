@@ -58,12 +58,12 @@ output_schema = {
     }
 }
 
-# Biến toàn cục cho model, sẽ được khởi tạo trong hàm main()
+# Biến toàn cục cho model
 gemini_model_global = None
 gemini_config_global = None
 
 # -----------------------------------------------
-# CÁC HÀM UTILS
+# UTILS
 # -----------------------------------------------
 
 def initialize_gemini():
@@ -223,7 +223,7 @@ def process_single_file(whisper_model, audio_path, excel_output_path):
             vad_filter=True,
             word_timestamps=True,
             condition_on_previous_text=False,
-            beam_size=3,
+            beam_size=5,
             temperature=0,
         )
         segments_list = list(segments)
@@ -263,18 +263,15 @@ def process_single_file(whisper_model, audio_path, excel_output_path):
 # -----------------------------------------------
 
 if __name__ == "__main__":
-    # --- CẤU HÌNH ---
-    # Thay đổi đường dẫn này cho phù hợp với máy của bạn
-    # Dùng / thay vì \ kể cả trên Windows cho dễ
+    # --- PATYH ---
     AUDIO_FILE = "sample_audio/2.wav" 
-    EXCEL_OUTPUT = "transcripts/2_gemini_order.xlsx"
-    # --- KẾT THÚC CẤU HÌNH ---
+    EXCEL_OUTPUT = "transcripts/2_wav_gemini_order.xlsx"
 
-    # 1. Khởi tạo các model (chỉ 1 lần)
+    # 1. Khởi tạo whisper + gemini
     whisper_model = load_whisper_model(model_size="medium")
     gemini_ready = initialize_gemini()
 
-    # 2. Chạy xử lý nếu mọi thứ sẵn sàng
+    # 2. main 
     if whisper_model and gemini_ready:
         process_single_file(whisper_model, AUDIO_FILE, EXCEL_OUTPUT)
     else:
